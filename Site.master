@@ -17,10 +17,8 @@
 </head>
 <body>
     <form runat="server">
-        <asp:ScriptManager runat="server">
             <Scripts>
             </Scripts>
-        </asp:ScriptManager>
 
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
