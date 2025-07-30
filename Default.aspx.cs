@@ -15,6 +15,15 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="e">An EventArgs object that contains no event data.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["UserId"] == null && Session["UserRole"] == null)
+        {
+            Response.Redirect("Account/Login.aspx");
+        }
+        else
+        {
+            Response.Write($"<p>User ID: {Session["UserId"]}</p>");
+            Response.Write($"<p>User Role: {Session["UserRole"]}</p>");
 
+        }
     }
 }
