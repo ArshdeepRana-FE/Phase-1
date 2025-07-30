@@ -8,7 +8,7 @@ public class DataAccessLayer
     private string connectionString;
     public DataAccessLayer()
     {
-        connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        connectionString = ConfigurationManager.ConnectionStrings["RestaurantDB"].ConnectionString;
     }
     public DataTable ExecuteQuery(string query)
     {
