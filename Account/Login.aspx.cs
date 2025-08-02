@@ -1,8 +1,18 @@
 using System;
 using System.Web.Security;
 
+/// <summary>
+/// Code-behind for the Login page.
+/// Handles user authentication and session management.
+/// </summary>
 public partial class Login : System.Web.UI.Page
 {
+    /// <summary>
+    /// Handles the Page Load event.
+    /// Ensures logic is only run on the initial page load.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">Event arguments.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack)
@@ -11,6 +21,12 @@ public partial class Login : System.Web.UI.Page
         }
     }
 
+    /// <summary>
+    /// Handles the Login button click event.
+    /// Authenticates the user and sets session data on successful login.
+    /// </summary>
+    /// <param name="sender">The source of the event (Login button).</param>
+    /// <param name="e">Event arguments.</param>
     protected void LoginButton_Click(object sender, EventArgs e)
     {
         var authService = new AuthService();
