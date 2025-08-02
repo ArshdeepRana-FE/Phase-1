@@ -1,18 +1,26 @@
 ﻿using System.Web.Optimization;
+
 namespace RestaurantManagementApplication
 {
+    /// <summary>
+    /// Configures JavaScript and CSS bundles for optimization.
+    /// </summary>
     public class BundleConfig
     {
-        // For more information on Bundling, visit https://go.microsoft.com/fwlink/?LinkID=303951
+        /// <summary>
+        /// Registers all bundles used in the application.
+        /// </summary>
+        /// <param name="bundles">A collection of bundles to which script and style bundles are added.</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
+            // Register script bundle for WebForms JavaScript files
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs"));
 
-
-            // Use the Development version of Modernizr to develop with and learn from. Then, when you’re
-            // ready for production, use the build tool at https://modernizr.com to pick only the tests you need
+            // Register Modernizr script bundle
+            // Use the development version during development. 
+            // For production, use the build tool at https://modernizr.com to include only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                            "~/Scripts/modernizr-*"));
+                "~/Scripts/modernizr-*"));
         }
     }
 }

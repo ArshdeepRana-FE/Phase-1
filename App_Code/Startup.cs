@@ -1,8 +1,15 @@
-﻿
-namespace RestaurantManagementApplication
+﻿namespace RestaurantManagementApplication
 {
-    public partial class Startup {
-        public void Configuration() {
+    /// <summary>
+    /// Defines the startup configuration for the application.
+    /// </summary>
+    public partial class Startup
+    {
+        /// <summary>
+        /// Contains logic to be executed during application startup.
+        /// </summary>
+        public void Configuration()
+        {
         }
     }
 }
