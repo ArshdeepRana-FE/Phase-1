@@ -13,8 +13,6 @@ This application is a comprehensive restaurant management system designed to str
 - [Database Schema](#database-schema)
 - [Features](#features)
 - [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
@@ -80,8 +78,3 @@ Push to the branch (git push origin feature-xyz).
 Open a pull request on GitHub.
 
 Please ensure that your code passes all tests and follows the project's coding conventions.
-
-### Contact
-For any questions or inquiries, you can contact me at:
-Email: your-email@example.com
-GitHub: https://github.com/yourusername
