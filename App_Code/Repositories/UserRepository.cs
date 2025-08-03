@@ -13,8 +13,7 @@ public class UserRepository
     /// <returns>The contact ID if found; otherwise, null.</returns>
     public int? GetContactIdByEmail(string email)
     {
-        string query = "SELECT id FROM contact_details WHERE email = @UserEmail";
-        var result = DBUtil.ExecuteScalar(query, new[] {
+        var result = DBUtil.ExecuteScalar(UserQueries.GetContactIdByEmail, new[] {
             new SqlParameter("@UserEmail", email)
         });
 
@@ -28,8 +27,7 @@ public class UserRepository
     /// <returns>The user ID if found; otherwise, null.</returns>
     public int? GetUserIdByContactId(int contactId)
     {
-        string query = "SELECT id FROM users WHERE contact_id = @ContactId";
-        var result = DBUtil.ExecuteScalar(query, new[] {
+        var result = DBUtil.ExecuteScalar(UserQueries.GetUserIdByContactId, new[] {
             new SqlParameter("@ContactId", contactId)
         });
 
@@ -43,8 +41,7 @@ public class UserRepository
     /// <returns>The user's role as a string, or null if not found.</returns>
     public string GetUserRoleByContactId(int contactId)
     {
-        string query = "SELECT role FROM users WHERE contact_id = @ContactId";
-        var result = DBUtil.ExecuteScalar(query, new[] {
+        var result = DBUtil.ExecuteScalar(UserQueries.GetUserRoleByContactId, new[] {
             new SqlParameter("@ContactId", contactId)
         });
 
@@ -58,8 +55,7 @@ public class UserRepository
     /// <returns>The user's password as a string, or null if not found.</returns>
     public string GetPasswordByUserId(int userId)
     {
-        string query = "SELECT user_password FROM account_details WHERE user_id = @UserId";
-        var result = DBUtil.ExecuteScalar(query, new[] {
+        var result = DBUtil.ExecuteScalar(UserQueries.GetPasswordByUserId, new[] {
             new SqlParameter("@UserId", userId)
         });
 
