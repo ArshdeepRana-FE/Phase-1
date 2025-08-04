@@ -17,25 +17,23 @@ public class AuthService
     /// - UserId: The authenticated user's ID if successful.
     /// - UserRole: The role of the authenticated user if successful.
     /// </returns>
-    public (bool Success, string Message, int? UserId, string UserRole) Authenticate(string email, string password)
+    public (bool Success, string Message, int? UserId, int? UserRole) Authenticate(string email, string password)
     {
         var contactId = _userRepository.GetContactIdByEmail(email);
-        if (contactId == null) return (false, "Email not found.", null, null);
+        if (contactId == null) return (false, Messages.EmailNotFound, null, null);
 
-        var userId = _userRepository.GetUserIdByContactId(contactId.Value);
-        if (userId == null) return (false, "User not found.", null, null);
-
-        var { contactId, userRole } = 
-
-        var userRole = _userRepository.GetUserRoleByContactId(contactId.Value);
-        if (userRole == null) return (false, "User role not found.", null, null);
+        var userInfo = _userRepository.GetContactIdByEmailWithRole(contactId.Value);
+        var userId = userInfo?.Id;
+        var userRole = userInfo?.Role;
+        if(userId == null || userRole == null)
+            return (false, Messages.UserNotFound, null, null);
 
         var storedPassword = _userRepository.GetPasswordByUserId(userId.Value);
-        if (storedPassword == null) return (false, "Account details not found.", null, null);
+        if (storedPassword == null) return (false, Messages.AccountNotFound, null, null);
 
         if (storedPassword != password.Trim())
-            return (false, "Invalid email or password.", null, null);
+            return (false, Messages.InvalidCredentials, null, null);
 
-        return (true, "Login successful.", userId.Value, userRole);
+        return (true, Messages.LoginSuccess, userId.Value, userRole.Value);
     }
 }

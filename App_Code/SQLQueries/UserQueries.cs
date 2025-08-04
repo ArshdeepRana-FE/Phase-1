@@ -12,22 +12,11 @@ public static class UserQueries
         WHERE email = @UserEmail";
 
     /// <summary>
-    /// SQL query to retrieve the user ID from the users table by contact ID.
+    /// SQL query to retrieve the user ID and user role from the users table by contact ID.
     /// </summary>
-    public const string GetUserIdByContactId = @"
-        SELECT id 
-        FROM users 
-        WHERE contact_id = @ContactId";
 
     public const string GetUserIdByContactIdWithRole = @"
         SELECT id, role 
-        FROM users 
-        WHERE contact_id = @ContactId";
-    /// <summary>
-    /// SQL query to retrieve the user role from the users table by contact ID.
-    /// </summary>
-    public const string GetUserRoleByContactId = @"
-        SELECT role 
         FROM users 
         WHERE contact_id = @ContactId";
 

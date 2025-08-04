@@ -9,7 +9,7 @@ public class UserRepository
     /// <summary>
     /// Retrieves the contact ID associated with the provided email.
     /// </summary>
-    /// <param name="email">The user's email address.</param>
+    /// <param name="email">The user's email address.</param>git s
     /// <returns>The contact ID if found; otherwise, null.</returns>
     public int? GetContactIdByEmail(string email)
     {
@@ -20,41 +20,29 @@ public class UserRepository
         return result != null ? (int?)Convert.ToInt32(result) : null;
     }
 
-    public int? GetContactIdByEmailWithRole(int contactId)
-    {
-        var result = DBUtil.ExecuteScalar(UserQueries.GetUserIdByContactIdWithRole, new[] {
-            new SqlParameter("@ContactId", contactId)
-        });
-        return result != null ? (int?)Convert.ToInt32(result) : null;
-    }
     /// <summary>
-    /// Retrieves the user ID associated with the provided contact ID.
+    /// Retrieves the user ID associated with the provided contact ID and Retrieves the role of the user associated with the provided contact ID.
     /// </summary>
     /// <param name="contactId">The contact ID of the user.</param>
-    /// <returns>The user ID if found; otherwise, null.</returns>
-    public int? GetUserIdByContactId(int contactId)
+    /// <returns>The user ID if found; otherwise, null. and The user's role as a string, or null if not found.</returns>
+    public UserInfo GetContactIdByEmailWithRole(int contactId)
     {
-        var result = DBUtil.ExecuteScalar(UserQueries.GetUserIdByContactId, new[] {
-            new SqlParameter("@ContactId", contactId)
-        });
-
-        return result != null ? (int?)Convert.ToInt32(result) : null;
+        using (var reader = DBUtil.ExecuteReader(UserQueries.GetUserIdByContactIdWithRole, new[] {
+        new SqlParameter("@ContactId", contactId)
+    }))
+        {
+            if (reader.Read())
+            {
+                return new UserInfo
+                {
+                    Id = Convert.ToInt32(reader["id"]),
+                    Role = Convert.ToInt32(reader["role"])
+                };
+            }
+        }
+        return null; // Return null if no user is found
     }
-
-    /// <summary>
-    /// Retrieves the role of the user associated with the provided contact ID.
-    /// </summary>
-    /// <param name="contactId">The contact ID of the user.</param>
-    /// <returns>The user's role as a string, or null if not found.</returns>
-    public string GetUserRoleByContactId(int contactId)
-    {
-        var result = DBUtil.ExecuteScalar(UserQueries.GetUserRoleByContactId, new[] {
-            new SqlParameter("@ContactId", contactId)
-        });
-
-        return result?.ToString();
-    }
-
+    
     /// <summary>
     /// Retrieves the password of the user associated with the provided user ID.
     /// </summary>
