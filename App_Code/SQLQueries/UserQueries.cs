@@ -4,27 +4,12 @@
 public static class UserQueries
 {
     /// <summary>
-    /// SQL query to retrieve the contact ID from the contact_details table by user email.
+    /// SQL query to get user id, user role, user password from users relation using the email entered by the user.
     /// </summary>
-    public const string GetContactIdByEmail = @"
-        SELECT id 
-        FROM contact_details 
-        WHERE email = @UserEmail";
-
-    /// <summary>
-    /// SQL query to retrieve the user ID and user role from the users table by contact ID.
-    /// </summary>
-
-    public const string GetUserIdByContactIdWithRole = @"
-        SELECT id, role 
-        FROM users 
-        WHERE contact_id = @ContactId";
-
-    /// <summary>
-    /// SQL query to retrieve the user password from the account_details table by user ID.
-    /// </summary>
-    public const string GetPasswordByUserId = @"
-        SELECT user_password 
-        FROM account_details 
-        WHERE user_id = @UserId";
+    public const string GetUserByEmail = @"
+        SELECT u.id AS UserId, u.role, u.password
+        FROM contact_details c
+        JOIN users u ON c.id = u.contact_id
+        WHERE c.email = @UserEmail;
+    ";
 }

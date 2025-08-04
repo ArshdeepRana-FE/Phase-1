@@ -19,21 +19,24 @@ public class AuthService
     /// </returns>
     public (bool Success, string Message, int? UserId, int? UserRole) Authenticate(string email, string password)
     {
-        var contactId = _userRepository.GetContactIdByEmail(email);
-        if (contactId == null) return (false, Messages.EmailNotFound, null, null);
+        // Retrieve user information from the repository
+        UserInfo user = _userRepository.GetUserByEmail(email);
 
-        var userInfo = _userRepository.GetContactIdByEmailWithRole(contactId.Value);
-        var userId = userInfo?.Id;
-        var userRole = userInfo?.Role;
-        if(userId == null || userRole == null)
+        // If the user does not exist, return failure
+        if (user == null || user?.Id == null || user?.Role == null || user?.Password == null)
+        {
             return (false, Messages.UserNotFound, null, null);
+        }
 
-        var storedPassword = _userRepository.GetPasswordByUserId(userId.Value);
-        if (storedPassword == null) return (false, Messages.AccountNotFound, null, null);
-
-        if (storedPassword != password.Trim())
+        // Verify the provided password against the stored hash
+        bool passwordIsValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+        if (!passwordIsValid)
+        {
             return (false, Messages.InvalidCredentials, null, null);
+        }
 
-        return (true, Messages.LoginSuccess, userId.Value, userRole.Value);
+        // If validation is successful, return user information
+        return (true, Messages.LoginSuccess, user.Id, user.Role);
     }
+
 }
