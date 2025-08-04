@@ -25,6 +25,8 @@ public class AuthService
         var userId = _userRepository.GetUserIdByContactId(contactId.Value);
         if (userId == null) return (false, "User not found.", null, null);
 
+        var { contactId, userRole } = 
+
         var userRole = _userRepository.GetUserRoleByContactId(contactId.Value);
         if (userRole == null) return (false, "User role not found.", null, null);
 

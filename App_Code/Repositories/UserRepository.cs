@@ -20,6 +20,13 @@ public class UserRepository
         return result != null ? (int?)Convert.ToInt32(result) : null;
     }
 
+    public int? GetContactIdByEmailWithRole(int contactId)
+    {
+        var result = DBUtil.ExecuteScalar(UserQueries.GetUserIdByContactIdWithRole, new[] {
+            new SqlParameter("@ContactId", contactId)
+        });
+        return result != null ? (int?)Convert.ToInt32(result) : null;
+    }
     /// <summary>
     /// Retrieves the user ID associated with the provided contact ID.
     /// </summary>

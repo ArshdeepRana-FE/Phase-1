@@ -19,6 +19,10 @@ public static class UserQueries
         FROM users 
         WHERE contact_id = @ContactId";
 
+    public const string GetUserIdByContactIdWithRole = @"
+        SELECT id, role 
+        FROM users 
+        WHERE contact_id = @ContactId";
     /// <summary>
     /// SQL query to retrieve the user role from the users table by contact ID.
     /// </summary>
