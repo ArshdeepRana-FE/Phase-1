@@ -34,12 +34,15 @@ public static class DBUtil
             }
         }
     }
+<<<<<<< HEAD
 
     /// <summary>
     ///    Executes a SQL query that does not return any data (e.g., INSERT, UPDATE, DELETE).
     /// </summary>
     /// <param name="query"></param>
     /// <param name="parameters"></param>
+=======
+>>>>>>> a1a357e (AR_RU_03 : Admin panel : Added filters, and displayed content in tabular format)
     public static void ExecuteNonQuery(string query, SqlParameter[] parameters)
     {
         using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -51,12 +54,15 @@ public static class DBUtil
         }
     }
 
+<<<<<<< HEAD
     /// <summary>
     ///    Executes a SQL query and returns a SqlDataReader for reading the result set.
     /// </summary>
     /// <param name="query"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
+=======
+>>>>>>> a1a357e (AR_RU_03 : Admin panel : Added filters, and displayed content in tabular format)
     public static SqlDataReader ExecuteReader(string query, SqlParameter[] parameters)
     {
         SqlConnection conn = new SqlConnection(ConnectionString);

@@ -1,4 +1,4 @@
-﻿public class RestuarantOrder
+﻿public class RestaurantOrder
 {
     public string OrderID { get; set; }
     public string OrderTime { get; set; }

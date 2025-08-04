@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Web.Providers.Entities;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /// <summary>
 /// Code-behind for the default landing page of the Restaurant Management Application.
 /// </summary>
-public partial class _Default : System.Web.UI.Page
+public partial class _Default : Page
 {
     /// <summary>
     /// Handles the Page Load event for the default page.
@@ -19,41 +15,31 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="e">An EventArgs object that contains no event data.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["UserId"] == null || Session["UserRole"] == null)
+        // Redirect unauthenticated users
+        if (Session["UserId"] == null || Session["UserRole"] == null || Convert.ToInt32(Session["UserRole"]) != 0)
         {
             Response.Redirect("Account/Login.aspx");
+            return;
         }
 
-
+        // Only run on first page load (not postbacks)
         if (!IsPostBack)
         {
-             string connectionString = ConfigurationManager.ConnectionStrings["RestaurantDB"].ConnectionString;
+            int ownerId = Convert.ToInt32(Session["UserId"]);
+            var ownerRepo = new OwnerRepository();
+            var restaurantIds = ownerRepo.GetRestaurantsByOwnerId(ownerId);
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            foreach (int id in restaurantIds)
             {
-                connection.Open();
-                string restaurantQuery = "SELECT id FROM owner_restaurant WHERE owner_id = @OwnerId";
-                SqlCommand command = new SqlCommand(restaurantQuery, connection);
-                command.Parameters.AddWithValue("@OwnerId", Session["UserId"].ToString());
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                var link = new HyperLink
                 {
-                    HyperLink linkRestaurant = new HyperLink();
-                    linkRestaurant.Text = "Restaurant ID: " + reader["id"].ToString();
-                    linkRestaurant.NavigateUrl = "RestaurantPage.aspx?id=" + reader["id"].ToString();
+                    Text = "Restaurant ID: " + id,
+                    NavigateUrl = $"/Pages/RestaurantPage.aspx?id={id}"
+                };
 
-
-                    RestaurantPanel.Controls.Add(linkRestaurant);
-                    RestaurantPanel.Controls.Add(new LiteralControl("<br/>"));
-                }
-
-                reader.Close();
-                connection.Close();
+                RestaurantPanel.Controls.Add(link);
+                RestaurantPanel.Controls.Add(new LiteralControl("<br/>"));
             }
         }
-    }   
-
-
+    }
 }
-
