@@ -49,6 +49,8 @@ public partial class RestaurantPage : Page
             ddlPaymentFilter.SelectedValue = _paymentFilter;
             ddlStatusFilter.SelectedValue = _statusFilter;
             ddlSortOrder.SelectedValue = _sortOrder;
+            txtSearch.Text = _searchText;
+            
         }
 
         // Load and display the orders
