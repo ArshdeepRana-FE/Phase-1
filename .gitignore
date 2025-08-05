@@ -53,5 +53,5 @@ TestResults/
 *.config
 *.orig
 
-Scripts/
-Content/
+
+/Scripts/
