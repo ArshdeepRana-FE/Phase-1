@@ -67,6 +67,17 @@ public partial class RestaurantPage : Page
         List<RestaurantOrder> orders = _orderService.GetOrders(_restaurantId, _paymentFilter, _statusFilter, _pageIndex, _pageSize, _sortOrder, _searchText);
         OrdersPanel.Controls.Clear(); // Clear previous order data from the panel
 
+        // Display a message if no orders match.
+        if (orders == null || orders.Count == 0)
+        {
+            // Show "no results" message
+            OrdersPanel.Controls.Add(new LiteralControl("<div class='no-results'>No results found.</div>"));
+
+            // Optional: clear pagination when no results
+            PaginationPanel.Controls.Clear();
+            return;
+        }
+
         // Loop through each order and display its details
         foreach (RestaurantOrder order in orders)
         {

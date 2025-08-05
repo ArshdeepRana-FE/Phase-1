@@ -42,6 +42,13 @@
             width: 100px;
         }
 
+         .no-results {
+            padding: 20px;
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+         }
+
         .pagination a {
             margin: 0 5px;
             text-decoration: none;
