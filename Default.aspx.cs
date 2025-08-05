@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -27,14 +28,14 @@ public partial class _Default : Page
         {
             int ownerId = Convert.ToInt32(Session["UserId"]);
             var ownerRepo = new OwnerRepository();
-            var restaurantIds = ownerRepo.GetRestaurantsByOwnerId(ownerId);
+            List<Restaurant> restaurants = ownerRepo.GetRestaurantsByOwnerId(ownerId);
 
-            foreach (int id in restaurantIds)
+            foreach (Restaurant restaurant in restaurants)
             {
                 var link = new HyperLink
                 {
-                    Text = "Restaurant ID: " + id,
-                    NavigateUrl = $"/Pages/RestaurantPage.aspx?id={id}"
+                    Text = "Restaurant ID: " + restaurant.Id + "  Restaurant Name: " + restaurant.Name,
+                    NavigateUrl = $"/Pages/RestaurantPage.aspx?id={restaurant.Id}"
                 };
 
                 RestaurantPanel.Controls.Add(link);

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Combined Restaurant Orders</title>
+    <title>Restaurant Orders</title>
     <style>
         .filters {
             margin: 20px;
@@ -79,6 +79,11 @@
                 <asp:ListItem Text="Newest First" Value="desc" />
                 <asp:ListItem Text="Oldest First" Value="asc" />
             </asp:DropDownList>
+             <br /><br />
+            <asp:Label ID="lblSearch" runat="server" Text="Search by Order item name:" />
+            <asp:TextBox ID="txtSearch" runat="server" CssClass="search-bar" />
+            <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="SearchItem"/>
+            
 
            </div>
 

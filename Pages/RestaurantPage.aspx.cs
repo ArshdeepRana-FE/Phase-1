@@ -6,35 +6,44 @@ using System.Web.UI.WebControls;
 public partial class RestaurantPage : Page
 {
     private readonly RestaurantOrderService _orderService = new RestaurantOrderService();
-    private readonly OrderService _orderDetailsService = new OrderService();
 
     private int _restaurantId;
-    private int _pageSize = 2;
+    private int _pageSize = 1;
     private int _pageIndex;
     private string _paymentFilter;
     private string _statusFilter;
     private string _sortOrder;
+    private string _searchText;
 
+    /// <summary>
+    /// Event handler for the Page_Load event. This method is executed when the page is first loaded.
+    /// It handles user authentication, query string processing, and initial loading of filters.
+    /// </summary>
     protected void Page_Load(object sender, EventArgs e)
     {
+        // Check for valid user session and role (admin)
         if (Session["UserId"] == null || Session["UserRole"] == null || Convert.ToInt32(Session["UserRole"]) != 0)
         {
             Response.Redirect("Account/Login.aspx");
             return;
         }
 
+        // Redirect to the default page if no restaurant id is provided in the query string
         if (Request.QueryString["id"] == null)
         {
             Response.Redirect("Default.aspx");
             return;
         }
 
+        // Get the query string parameters
         _restaurantId = int.Parse(Request.QueryString["id"]);
         _paymentFilter = Request.QueryString["filterPayment"] ?? "all";
         _statusFilter = Request.QueryString["filterStatus"] ?? "all";
         _sortOrder = Request.QueryString["sort"] ?? "desc";
         _pageIndex = Request.QueryString["page"] != null ? int.Parse(Request.QueryString["page"]) : 0;
+        _searchText = Request.QueryString["search"] ?? "";
 
+        // Set default values for the dropdown filters if the page is being loaded for the first time
         if (!IsPostBack)
         {
             ddlPaymentFilter.SelectedValue = _paymentFilter;
@@ -42,22 +51,29 @@ public partial class RestaurantPage : Page
             ddlSortOrder.SelectedValue = _sortOrder;
         }
 
+        // Load and display the orders
         LoadOrders();
     }
 
+    /// <summary>
+    /// Loads the orders for the specified restaurant based on the current filters and pagination.
+    /// This method is responsible for generating the HTML for each order and its associated items.
+    /// </summary>
     private void LoadOrders()
     {
-        var orders = _orderService.GetOrders(_restaurantId, _paymentFilter, _statusFilter, _pageIndex, _pageSize, _sortOrder);
-        OrdersPanel.Controls.Clear();
+        // Fetch the list of orders from the service based on current filters and pagination parameters
+        List<RestaurantOrder> orders = _orderService.GetOrders(_restaurantId, _paymentFilter, _statusFilter, _pageIndex, _pageSize, _sortOrder, _searchText);
+        OrdersPanel.Controls.Clear(); // Clear previous order data from the panel
 
-        foreach (var order in orders)
+        // Loop through each order and display its details
+        foreach (RestaurantOrder order in orders)
         {
-            var orderItems = _orderDetailsService.GetItems(Convert.ToInt32(order.OrderID));
-            var totalPrice = _orderDetailsService.GetTotalPrice(Convert.ToInt32(order.OrderID));
+            List<OrderItem> orderItems = order.OrderItems;
 
+            // Create a panel card for the order
             Panel card = new Panel { CssClass = "order-card" };
 
-            // Order Header
+            // Add order header (Order ID, Time, Payment Mode, and Status)
             card.Controls.Add(new LiteralControl($@"
                 <div class='order-header'>
                     <label><strong>Order ID:</strong> {order.OrderID}</label>
@@ -66,7 +82,7 @@ public partial class RestaurantPage : Page
                     <label><strong>Status:</strong></label>
             "));
 
-            // Status dropdown
+            // Add status dropdown for updating order status
             DropDownList statusDropdown = new DropDownList { CssClass = "status-dropdown", AutoPostBack = false };
             statusDropdown.Items.Add(new ListItem("Accepted", "1"));
             statusDropdown.Items.Add(new ListItem("Rejected", "0"));
@@ -74,7 +90,7 @@ public partial class RestaurantPage : Page
             statusDropdown.SelectedValue = order.Status.ToString();
             statusDropdown.ID = "Status_" + order.OrderID;
 
-            // Save button
+            // Add save button for updating the status
             Button saveBtn = new Button
             {
                 Text = "Save",
@@ -96,7 +112,8 @@ public partial class RestaurantPage : Page
             }
             itemsTable.Rows.Add(header);
 
-            foreach (var item in orderItems)
+            // Add each item in the order to the items table
+            foreach (OrderItem item in orderItems)
             {
                 TableRow row = new TableRow();
                 row.Cells.Add(new TableCell { Text = item.Name });
@@ -105,19 +122,26 @@ public partial class RestaurantPage : Page
                 row.Cells.Add(new TableCell { Text = $"₹{item.TotalPrice:F2}" });
                 row.Cells.Add(new TableCell { Text = item.Type });
                 itemsTable.Rows.Add(row);
+
+                order.TotalPrice += item.TotalPrice;
             }
 
             card.Controls.Add(itemsTable);
 
-            // Total Price
-            card.Controls.Add(new LiteralControl($"<br /><strong>Total Price: ₹{totalPrice:F2}</strong>"));
+            // Add total price of the order
+            card.Controls.Add(new LiteralControl($"<br /><strong>Total Price: ₹{order.TotalPrice}</strong>"));
 
-            OrdersPanel.Controls.Add(card);
+            OrdersPanel.Controls.Add(card); // Add the card to the page
         }
 
+        // Add pagination links for navigating between pages
         AddPaginationLinks();
     }
 
+    /// <summary>
+    /// Event handler for saving the updated status of an order when the "Save" button is clicked.
+    /// It triggers an update in the database and refreshes the page.
+    /// </summary>
     protected void SaveStatus_Click(object sender, EventArgs e)
     {
         Button btn = (Button)sender;
@@ -126,20 +150,30 @@ public partial class RestaurantPage : Page
 
         if (ddl != null)
         {
+            // Update the order status in the database
             _orderService.UpdateOrderStatus(orderId, ddl.SelectedValue);
-            Response.Redirect(Request.Url.ToString()); // Refresh
+            Response.Redirect(Request.Url.ToString()); // Refresh the page
         }
     }
 
+    /// <summary>
+    /// Event handler for when any filter (payment, status, or sort order) is changed.
+    /// It reloads the page with the new filter values and resets the page index to 0.
+    /// </summary>
     protected void FilterChanged(object sender, EventArgs e)
     {
         string newPayment = ddlPaymentFilter.SelectedValue;
         string newStatus = ddlStatusFilter.SelectedValue;
         string newSort = ddlSortOrder.SelectedValue;
 
-        Response.Redirect($"RestaurantPage.aspx?id={_restaurantId}&filterPayment={newPayment}&filterStatus={newStatus}&sort={newSort}&page=0");
+        // Redirect with updated filters and reset page to the first page
+        Response.Redirect($"RestaurantPage.aspx?id={_restaurantId}&filterPayment={newPayment}&filterStatus={newStatus}&sort={newSort}&search={_searchText}&page=0");
     }
 
+    /// <summary>
+    /// Adds pagination links at the bottom of the page to navigate between order pages.
+    /// It calculates the total number of pages and creates the corresponding navigation links.
+    /// </summary>
     private void AddPaginationLinks()
     {
         int totalPages = _orderService.GetTotalOrderPages(_restaurantId, _paymentFilter, _statusFilter, _pageSize);
@@ -147,22 +181,32 @@ public partial class RestaurantPage : Page
         string paginationHtml = "<div class='pagination'>";
         if (_pageIndex > 0)
         {
-            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&page={_pageIndex - 1}'>Prev</a>";
+            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&search={_searchText}&page={_pageIndex - 1}'>Prev</a>";
         }
 
         for (int i = 0; i < totalPages; i++)
         {
-            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&page={i}'>{i + 1}</a>";
+            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&search={_searchText}&page={i}'>{i + 1}</a>";
         }
 
         if (_pageIndex < totalPages - 1)
         {
-            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&page={_pageIndex + 1}'>Next</a>";
+            paginationHtml += $"<a href='RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&search={_searchText}&page={_pageIndex + 1}'>Next</a>";
         }
 
         paginationHtml += "</div>";
 
         PaginationPanel.Controls.Clear();
         PaginationPanel.Controls.Add(new LiteralControl(paginationHtml));
+    }
+
+    /// <summary>
+    /// Event handler for the search input. It updates the search text and reloads the page with the search filter applied.
+    /// </summary>
+    protected void SearchItem(object sender, EventArgs e)
+    {
+        _searchText = txtSearch.Text.Trim();
+        // Redirect to the first page with the updated search text
+        Response.Redirect($"RestaurantPage.aspx?id={_restaurantId}&filterPayment={_paymentFilter}&filterStatus={_statusFilter}&sort={_sortOrder}&search={_searchText}&page=0");
     }
 }

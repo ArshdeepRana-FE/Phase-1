@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// Service class for owner
+/// </summary>
 public class OwnerService
 {
     private readonly OwnerRepository _repository;
@@ -14,7 +17,7 @@ public class OwnerService
     /// </summary>
     /// <param name="ownerId">The user ID of the owner.</param>
     /// <returns>List of OwnerRestaurant.</returns>
-    public List<int> GetRestaurantsForOwner(int ownerId)
+    public List<Restaurant> GetRestaurantsForOwner(int ownerId)
     {
         return _repository.GetRestaurantsByOwnerId(ownerId);
     }

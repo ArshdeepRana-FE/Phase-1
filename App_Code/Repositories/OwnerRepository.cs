@@ -9,17 +9,12 @@ public class OwnerRepository
     /// </summary>
     /// <param name="ownerId">The user ID of the restaurant owner.</param>
     /// <returns>A list of OwnerRestaurant instances.</returns>
-    public List<int> GetRestaurantsByOwnerId(int ownerId)
+    public List<Restaurant> GetRestaurantsByOwnerId(int ownerId)
     {
-        var restaurants = new List<int>();
-
-        string query = @"
-            SELECT id 
-            FROM owner_restaurant 
-            WHERE owner_id = @OwnerId";
+        List<Restaurant> restaurants = new List<Restaurant>();
 
         using (SqlConnection conn = new SqlConnection(DBUtil.ConnectionString))
-        using (SqlCommand cmd = new SqlCommand(query, conn))
+        using (SqlCommand cmd = new SqlCommand(OwnerQueries.GetRestaurantByOwnerId, conn))
         {
             cmd.Parameters.AddWithValue("@OwnerId", ownerId);
             conn.Open();
@@ -29,7 +24,11 @@ public class OwnerRepository
                 while (reader.Read())
                 {
                     restaurants.Add(
-                        Convert.ToInt32(reader["id"])
+                       new Restaurant
+                       {
+                           Id = Convert.ToInt32(reader["id"]),
+                           Name = reader["name"].ToString()
+                       }
                     );
                 }
             }
