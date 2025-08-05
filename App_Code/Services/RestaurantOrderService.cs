@@ -39,9 +39,9 @@ public class RestaurantOrderService
     /// <param name="statusFilter">Status filter i.e, Rejected, Accepted or Delivered</param>
     /// <param name="pageSize">Number of orders per page</param>
     /// <returns></returns>
-    public int GetTotalOrderPages(int restaurantId, string paymentFilter, string statusFilter, int pageSize)
+    public int GetTotalOrderPages(int restaurantId, string paymentFilter, string statusFilter, int pageSize, string searchText)
     {
-        int totalRecords = _repo.GetOrderCount(restaurantId, paymentFilter, statusFilter);
+        int totalRecords = _repo.GetOrderCount(restaurantId, paymentFilter, statusFilter, searchText);
         return (int)System.Math.Ceiling((double)totalRecords / pageSize);
     }
 

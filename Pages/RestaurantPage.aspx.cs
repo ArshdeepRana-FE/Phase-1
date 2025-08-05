@@ -178,7 +178,7 @@ public partial class RestaurantPage : Page
     /// </summary>
     private void AddPaginationLinks()
     {
-        int totalPages = _orderService.GetTotalOrderPages(_restaurantId, _paymentFilter, _statusFilter, _pageSize);
+        int totalPages = _orderService.GetTotalOrderPages(_restaurantId, _paymentFilter, _statusFilter, _pageSize, _searchText);
 
         string paginationHtml = "<div class='pagination'>";
         if (_pageIndex > 0)

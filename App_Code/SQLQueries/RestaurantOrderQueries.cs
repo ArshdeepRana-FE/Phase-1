@@ -41,6 +41,7 @@ public class RestaurantOrderQueries
     /// </summary>
     public const string StatusFilter = " AND o.status = @StatusFilter";
 
+    public const string RetaurantIdMatches = " o.restaurant_id = @RestaurantId";
     /// <summary>
     /// SQL condition to filter orders based on a search text for the item name.
     /// This condition checks if any order item contains the search text in its name.
@@ -54,6 +55,15 @@ public class RestaurantOrderQueries
         AND mi.name LIKE '%' + @SearchText + '%'
     )";
 
+    /// <summary>
+    /// SQL query to help find the orders with matching order items
+    /// </summary>
+    public const string OrderWithItemName = @"
+               AND EXISTS (
+                    SELECT 1 FROM order_item oi
+                    INNER JOIN menu_items mi ON oi.item_id = mi.id
+                    WHERE oi.order_id = o.id AND mi.name LIKE '%' + @SearchText + '%'
+                )";
     /// <summary>
     /// Generates a SQL query to fetch order items for the paginated orders.
     /// The query retrieves the order details along with the items in those orders.
@@ -92,5 +102,8 @@ public class RestaurantOrderQueries
     /// <summary>
     /// SQL query to count the total number of orders for a given restaurant.
     /// </summary>
-    public const string TotalOrders = "SELECT COUNT(*) FROM orders o WHERE restaurant_id = @RestaurantId";
+    public static string GetTotalOrders(string whereClause)
+    {
+        return $"SELECT COUNT(*) FROM orders o WHERE {whereClause}";
+    }
 }

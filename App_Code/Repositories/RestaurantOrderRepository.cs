@@ -111,29 +111,40 @@ public class RestaurantOrderRepository
     /// <param name="paymentFilter"></param>
     /// <param name="statusFilter"></param>
     /// <returns></returns>
-    public int GetOrderCount(int restaurantId, string paymentFilter, string statusFilter)
+    public int GetOrderCount(int restaurantId, string paymentFilter, string statusFilter, string searchText)
     {
-        string query = RestaurantOrderQueries.TotalOrders;
+            List<string> conditions = new List<string> { RestaurantOrderQueries.RetaurantIdMatches };
+
+            if (paymentFilter != "all")
+                conditions.Add(RestaurantOrderQueries.PaymentFilter);
+
+            if (statusFilter != "all")
+                conditions.Add(RestaurantOrderQueries.StatusFilter);
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                conditions.Add(RestaurantOrderQueries.OrderWithItemName);
+            }
+
+            string whereClause = string.Join(" ", conditions);
+
+            string sql = RestaurantOrderQueries.GetTotalOrders(whereClause);
 
         var parameters = new List<SqlParameter>
-        {
-            new SqlParameter("@RestaurantId", restaurantId)
-        };
+            {
+                new SqlParameter("@RestaurantId", restaurantId)
+            };
 
-        if (!string.IsNullOrEmpty(paymentFilter) && paymentFilter.ToLower() != "all")
-        {
-            query += RestaurantOrderQueries.PaymentFilter;
-            parameters.Add(new SqlParameter("@PaymentFilter", paymentFilter));
-        }
+              if (paymentFilter != "all")
+                parameters.Add(new SqlParameter("@PaymentFilter", paymentFilter));
+              if (statusFilter != "all")
+                parameters.Add(new SqlParameter("@StatusFilter", statusFilter));
+              if (!string.IsNullOrEmpty(searchText))
+                parameters.Add(new SqlParameter("@SearchText", searchText));
 
-        if (!string.IsNullOrEmpty(statusFilter) && statusFilter.ToLower() != "all")
-        {
-            query += RestaurantOrderQueries.StatusFilter;
-            parameters.Add(new SqlParameter("@StatusFilter", statusFilter));
-        }
-
-        return Convert.ToInt32(DBUtil.ExecuteScalar(query, parameters.ToArray()));
+        return (int)DBUtil.ExecuteScalar(sql, parameters.ToArray());
     }
+    
 
     /// <summary>
     /// Executes a SQL query to update order status
