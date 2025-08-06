@@ -29,6 +29,11 @@ public partial class Login : System.Web.UI.Page
     /// <param name="e">Event arguments.</param>
     protected void LoginButton_Click(object sender, EventArgs e)
     {
+        if(UserEmail.Text == string.Empty || Password.Text == string.Empty)
+        {
+            ErrorMessage.Text = "Email and password cannot be empty.";
+            return;
+        }
         var authService = new AuthService();
         var result = authService.Authenticate(UserEmail.Text, Password.Text);
 
