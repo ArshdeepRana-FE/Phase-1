@@ -8,7 +8,7 @@ public partial class RestaurantPage : Page
     private readonly RestaurantOrderService _orderService = new RestaurantOrderService();
 
     private int _restaurantId;
-    private int _pageSize = 1;
+    private int _pageSize = 5;
     private int _pageIndex;
     private string _paymentFilter;
     private string _statusFilter;
@@ -50,6 +50,7 @@ public partial class RestaurantPage : Page
             ddlStatusFilter.SelectedValue = _statusFilter;
             ddlSortOrder.SelectedValue = _sortOrder;
             txtSearch.Text = _searchText;
+            
             
         }
 
@@ -102,6 +103,23 @@ public partial class RestaurantPage : Page
             statusDropdown.Items.Add(new ListItem("Delivered", "2"));
             statusDropdown.SelectedValue = order.Status.ToString();
             statusDropdown.ID = "Status_" + order.OrderID;
+
+
+            if (order.Status.Equals("2")) // If the current status is "Delivered"
+            {
+                statusDropdown.Items.FindByValue("0").Enabled = false; // Disable "Rejected"
+                statusDropdown.Items.FindByValue("1").Enabled = false; // Disable "Accepted"
+            }
+            else if (order.Status.Equals("1")) // If the current status is "Accepted"
+            {
+                statusDropdown.Items.FindByValue("2").Enabled = true; // Disable "Delivered"
+                statusDropdown.Items.FindByValue("0").Enabled = false; // Disable "Rejected"
+            }
+            else if (order.Status.Equals("0")) // If the current status is "Rejected"
+            {
+                statusDropdown.Items.FindByValue("2").Enabled = false; // Disable "Delivered"
+                statusDropdown.Items.FindByValue("1").Enabled = false; // Disable "Accepted"
+            }
 
             // Add save button for updating the status
             Button saveBtn = new Button
