@@ -79,6 +79,7 @@
                 <asp:ListItem Text="Rejected" Value="0" />
                 <asp:ListItem Text="Accepted" Value="1" />
                 <asp:ListItem Text="Delivered" Value="2" />
+                <asp:ListItem Text="To be approved" value ="3" />
             </asp:DropDownList>
 
             <asp:Label ID="lblSort" runat="server" Text="Sort by Time:" />
@@ -86,8 +87,9 @@
                 <asp:ListItem Text="Newest First" Value="desc" />
                 <asp:ListItem Text="Oldest First" Value="asc" />
             </asp:DropDownList>
+
              <br /><br />
-            <asp:Label ID="lblSearch" runat="server" Text="Search by Order item name:" />
+            <asp:Label ID="lblSearch" runat="server" Text="Search by Order item name or Order id:" />
             <asp:TextBox ID="txtSearch" runat="server" CssClass="search-bar" />
             <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="SearchItem"/>
             

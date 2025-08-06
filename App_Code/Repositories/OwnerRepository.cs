@@ -13,27 +13,24 @@ public class OwnerRepository
     {
         List<Restaurant> restaurants = new List<Restaurant>();
 
-        using (SqlConnection conn = new SqlConnection(DBUtil.ConnectionString))
-        using (SqlCommand cmd = new SqlCommand(OwnerQueries.GetRestaurantByOwnerId, conn))
+        SqlParameter[] parameters = new SqlParameter[]
         {
-            cmd.Parameters.AddWithValue("@OwnerId", ownerId);
-            conn.Open();
+        new SqlParameter("@OwnerId", ownerId)
+        };
 
-            using (SqlDataReader reader = cmd.ExecuteReader())
+        using (SqlDataReader reader = DBUtil.ExecuteReader(OwnerQueries.GetRestaurantByOwnerId, parameters))
+        {
+            while (reader.Read())
             {
-                while (reader.Read())
+                restaurants.Add(new Restaurant
                 {
-                    restaurants.Add(
-                       new Restaurant
-                       {
-                           Id = Convert.ToInt32(reader["id"]),
-                           Name = reader["name"].ToString()
-                       }
-                    );
-                }
+                    Id = Convert.ToInt32(reader["id"]),
+                    Name = reader["name"].ToString()
+                });
             }
         }
 
         return restaurants;
     }
+
 }

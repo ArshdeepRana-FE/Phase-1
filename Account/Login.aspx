@@ -19,7 +19,7 @@
                         </div>
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="Password" CssClass="control-label">Password</asp:Label>
-                            <asp:TextBox runat="server" ID="Password" TextMode="Password" CssClass="form-control" />
+                            <asp:TextBox runat="server" ID="Password" TextMode="Password" CssClass="form-control"/>
                         </div>
                         <asp:Button runat="server" ID="LoginButton" Text="Log in" CssClass="btn btn-primary btn-block" OnClick="LoginButton_Click" />
                     </asp:Panel>

@@ -26,7 +26,8 @@ public class RestaurantOrderRepository
         int startRow,
         int endRow,
         string sortDirection,
-        string searchText)
+        string searchText
+        )
     {
         var orders = new List<RestaurantOrder>();
 
@@ -43,7 +44,7 @@ public class RestaurantOrderRepository
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            query += RestaurantOrderQueries.SearchByItemName;
+            query += RestaurantOrderQueries.SearchByItemNameOrOrderID;
         }
 
         query += RestaurantOrderQueries.GetOrderItems(sortDirection);

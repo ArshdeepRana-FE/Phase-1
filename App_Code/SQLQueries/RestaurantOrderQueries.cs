@@ -44,15 +44,16 @@ public class RestaurantOrderQueries
     public const string RetaurantIdMatches = " o.restaurant_id = @RestaurantId";
     /// <summary>
     /// SQL condition to filter orders based on a search text for the item name.
-    /// This condition checks if any order item contains the search text in its name.
+    /// This condition checks if any order item or orderId contains the search text in its name.
     /// </summary>
-    public const string SearchByItemName = @"
+    public const string SearchByItemNameOrOrderID = @"
     AND EXISTS (
         SELECT 1
         FROM order_item oi
         INNER JOIN menu_items mi ON oi.item_id = mi.id
         WHERE oi.order_id = o.id
         AND mi.name LIKE '%' + @SearchText + '%'
+        OR o.id LIKE '%' + @SearchText + '%'
     )";
 
     /// <summary>
@@ -63,7 +64,8 @@ public class RestaurantOrderQueries
                     SELECT 1 FROM order_item oi
                     INNER JOIN menu_items mi ON oi.item_id = mi.id
                     WHERE oi.order_id = o.id AND mi.name LIKE '%' + @SearchText + '%'
-                )";
+                )
+               ";
     /// <summary>
     /// Generates a SQL query to fetch order items for the paginated orders.
     /// The query retrieves the order details along with the items in those orders.
@@ -84,7 +86,7 @@ public class RestaurantOrderQueries
             po.customer_id,
             oi.item_id,
             oi.quantity,
-            mi.name, 
+            mi.name,
             mi.price,
             mi.type
         FROM PaginatedOrders po

@@ -14,7 +14,7 @@ public partial class RestaurantPage : Page
     private string _statusFilter;
     private string _sortOrder;
     private string _searchText;
-
+    private string _priceFilter;
     /// <summary>
     /// Event handler for the Page_Load event. This method is executed when the page is first loaded.
     /// It handles user authentication, query string processing, and initial loading of filters.
@@ -40,6 +40,7 @@ public partial class RestaurantPage : Page
         _paymentFilter = Request.QueryString["filterPayment"] ?? "all";
         _statusFilter = Request.QueryString["filterStatus"] ?? "all";
         _sortOrder = Request.QueryString["sort"] ?? "desc";
+        _priceFilter = Request.QueryString["filterPrice"] ?? "desc";
         _pageIndex = Request.QueryString["page"] != null ? int.Parse(Request.QueryString["page"]) : 0;
         _searchText = Request.QueryString["search"] ?? "";
 
@@ -50,8 +51,6 @@ public partial class RestaurantPage : Page
             ddlStatusFilter.SelectedValue = _statusFilter;
             ddlSortOrder.SelectedValue = _sortOrder;
             txtSearch.Text = _searchText;
-            
-            
         }
 
         // Load and display the orders
@@ -101,6 +100,7 @@ public partial class RestaurantPage : Page
             statusDropdown.Items.Add(new ListItem("Accepted", "1"));
             statusDropdown.Items.Add(new ListItem("Rejected", "0"));
             statusDropdown.Items.Add(new ListItem("Delivered", "2"));
+            statusDropdown.Items.Add(new ListItem("To be Approved", "3"));
             statusDropdown.SelectedValue = order.Status.ToString();
             statusDropdown.ID = "Status_" + order.OrderID;
 
@@ -109,16 +109,22 @@ public partial class RestaurantPage : Page
             {
                 statusDropdown.Items.FindByValue("0").Enabled = false; // Disable "Rejected"
                 statusDropdown.Items.FindByValue("1").Enabled = false; // Disable "Accepted"
+                statusDropdown.Items.FindByValue("3").Enabled = false; // Disable "To be Approved"
+
             }
             else if (order.Status.Equals("1")) // If the current status is "Accepted"
             {
                 statusDropdown.Items.FindByValue("2").Enabled = true; // Disable "Delivered"
                 statusDropdown.Items.FindByValue("0").Enabled = false; // Disable "Rejected"
+                statusDropdown.Items.FindByValue("3").Enabled = false; // Disable "To be Approved"
+
             }
             else if (order.Status.Equals("0")) // If the current status is "Rejected"
             {
                 statusDropdown.Items.FindByValue("2").Enabled = false; // Disable "Delivered"
                 statusDropdown.Items.FindByValue("1").Enabled = false; // Disable "Accepted"
+                statusDropdown.Items.FindByValue("3").Enabled = false; // Disable "To be Approved"
+
             }
 
             // Add save button for updating the status
