@@ -26,7 +26,9 @@ public partial class Login : System.Web.UI.Page
     /// Authenticates the user and sets session data on successful login.
     /// </summary>
     /// <param name="sender">The source of the event (Login button).</param>
-    /// <param name="e">Event arguments.</param>
+    /// <summary>
+    /// Authenticates the submitted login credentials and handles the resulting login state.
+    /// </summary>
     protected void LoginButton_Click(object sender, EventArgs e)
     {
         if(UserEmail.Text == string.Empty || Password.Text == string.Empty)

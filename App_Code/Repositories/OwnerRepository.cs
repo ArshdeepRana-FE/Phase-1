@@ -8,7 +8,11 @@ public class OwnerRepository
     /// Retrieves all restaurant IDs owned by the specified owner.
     /// </summary>
     /// <param name="ownerId">The user ID of the restaurant owner.</param>
-    /// <returns>A list of OwnerRestaurant instances.</returns>
+    /// <summary>
+    /// Retrieves the restaurants associated with an owner.
+    /// </summary>
+    /// <param name="ownerId">The identifier of the owner.</param>
+    /// <returns>The restaurants associated with the specified owner.</returns>
     public List<Restaurant> GetRestaurantsByOwnerId(int ownerId)
     {
         List<Restaurant> restaurants = new List<Restaurant>();

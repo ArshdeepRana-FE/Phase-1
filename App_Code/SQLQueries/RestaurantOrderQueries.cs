@@ -13,7 +13,11 @@ public class RestaurantOrderQueries
     /// based on the specified sort direction.
     /// </summary>
     /// <param name="sortDirection">The direction to sort the orders, either 'ASC' or 'DESC'.</param>
-    /// <returns>A SQL query string for fetching paginated orders.</returns>
+    /// <summary>
+    /// Builds the opening SQL statement for retrieving a restaurant's orders with row-based pagination.
+    /// </summary>
+    /// <param name="sortDirection">The SQL sort direction applied to the order time.</param>
+    /// <returns>A SQL query fragment that starts the paginated orders common table expression.</returns>
     public static string PaginatedOrders(string sortDirection)
     {
         return $@"
@@ -71,7 +75,11 @@ public class RestaurantOrderQueries
     /// The query retrieves the order details along with the items in those orders.
     /// </summary>
     /// <param name="sortDirection">The direction to sort the results, either 'ASC' or 'DESC'.</param>
-    /// <returns>A SQL query string for fetching order items for paginated orders.</returns>
+    /// <summary>
+    /// Completes the paginated order query by selecting each order's items within the requested row range.
+    /// </summary>
+    /// <param name="sortDirection">The SQL sort direction for ordering orders by order time.</param>
+    /// <returns>A SQL query fragment containing the order and item data.</returns>
     public static string GetOrderItems(string sortDirection)
     {
         return $@"
@@ -103,7 +111,11 @@ public class RestaurantOrderQueries
 
     /// <summary>
     /// SQL query to count the total number of orders for a given restaurant.
+    /// <summary>
+    /// Builds a query that counts orders matching the specified condition.
     /// </summary>
+    /// <param name="whereClause">The SQL condition applied to the orders.</param>
+    /// <returns>A SQL query that returns the matching order count.</returns>
     public static string GetTotalOrders(string whereClause)
     {
         return $"SELECT COUNT(*) FROM orders o WHERE {whereClause}";
