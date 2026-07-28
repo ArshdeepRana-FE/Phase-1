@@ -52,3 +52,6 @@ TestResults/
 *.cache
 *.config
 *.orig
+
+
+/Scripts/
