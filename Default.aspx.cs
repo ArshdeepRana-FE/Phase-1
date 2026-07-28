@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,7 +13,9 @@ public partial class _Default : Page
     /// This method is executed every time the page is loaded or refreshed.
     /// </summary>
     /// <param name="sender">The source of the event (typically the page itself).</param>
-    /// <param name="e">An EventArgs object that contains no event data.</param>
+    /// <summary>
+    /// Initializes the page for an authorized owner and displays their restaurants.
+    /// </summary>
     protected void Page_Load(object sender, EventArgs e)
     {
         // Redirect unauthenticated users

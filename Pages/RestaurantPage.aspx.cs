@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -18,7 +18,11 @@ public partial class RestaurantPage : Page
     /// <summary>
     /// Event handler for the Page_Load event. This method is executed when the page is first loaded.
     /// It handles user authentication, query string processing, and initial loading of filters.
+    /// <summary>
+    /// Initializes the page state from the current session and query parameters, then loads the restaurant orders.
     /// </summary>
+    /// <param name="sender">The object that raised the event.</param>
+    /// <param name="e">The event data.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
         // Check for valid user session and role (admin)
@@ -60,6 +64,8 @@ public partial class RestaurantPage : Page
     /// <summary>
     /// Loads the orders for the specified restaurant based on the current filters and pagination.
     /// This method is responsible for generating the HTML for each order and its associated items.
+    /// <summary>
+    /// Loads filtered orders and renders their details, status controls, item tables, and pagination links.
     /// </summary>
     private void LoadOrders()
     {
@@ -178,6 +184,8 @@ public partial class RestaurantPage : Page
     /// <summary>
     /// Event handler for saving the updated status of an order when the "Save" button is clicked.
     /// It triggers an update in the database and refreshes the page.
+    /// <summary>
+    /// Updates the selected order status and refreshes the page.
     /// </summary>
     protected void SaveStatus_Click(object sender, EventArgs e)
     {
@@ -196,7 +204,11 @@ public partial class RestaurantPage : Page
     /// <summary>
     /// Event handler for when any filter (payment, status, or sort order) is changed.
     /// It reloads the page with the new filter values and resets the page index to 0.
+    /// <summary>
+    /// Applies the selected order filters and sort order, then returns to the first results page.
     /// </summary>
+    /// <param name="sender">The control that raised the event.</param>
+    /// <param name="e">The event data.</param>
     protected void FilterChanged(object sender, EventArgs e)
     {
         string newPayment = ddlPaymentFilter.SelectedValue;
@@ -210,6 +222,8 @@ public partial class RestaurantPage : Page
     /// <summary>
     /// Adds pagination links at the bottom of the page to navigate between order pages.
     /// It calculates the total number of pages and creates the corresponding navigation links.
+    /// <summary>
+    /// Builds pagination links for the current order view and displays them in the pagination panel.
     /// </summary>
     private void AddPaginationLinks()
     {
@@ -239,7 +253,11 @@ public partial class RestaurantPage : Page
 
     /// <summary>
     /// Event handler for the search input. It updates the search text and reloads the page with the search filter applied.
+    /// <summary>
+    /// Applies the entered search text and navigates to the first page of matching orders.
     /// </summary>
+    /// <param name="sender">The control that triggered the event.</param>
+    /// <param name="e">The event data.</param>
     protected void SearchItem(object sender, EventArgs e)
     {
         _searchText = txtSearch.Text.Trim();

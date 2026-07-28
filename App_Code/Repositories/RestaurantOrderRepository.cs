@@ -18,7 +18,17 @@ public class RestaurantOrderRepository
     /// <param name="endRow"></param>
     /// <param name="sortDirection"></param>
     /// <param name="searchText"></param>
-    /// <returns></returns>
+    /// <summary>
+    /// Retrieves a paginated list of restaurant orders with optional payment, status, and search filters.
+    /// </summary>
+    /// <param name="restaurantId">The restaurant whose orders are retrieved.</param>
+    /// <param name="paymentFilter">The payment mode used to filter orders, or "all" to include all payment modes.</param>
+    /// <param name="statusFilter">The order status used to filter orders, or "all" to include all statuses.</param>
+    /// <param name="startRow">The first row in the requested page.</param>
+    /// <param name="endRow">The last row in the requested page.</param>
+    /// <param name="sortDirection">The requested sort direction; only "DESC" selects descending order, and other values select ascending order.</param>
+    /// <param name="searchText">Text used to search by item name or order ID.</param>
+    /// <returns>A list of orders, each containing its associated order items.</returns>
     public List<RestaurantOrder> GetOrders(
         int restaurantId,
         string paymentFilter,
@@ -111,7 +121,14 @@ public class RestaurantOrderRepository
     /// <param name="restaurantId"></param>
     /// <param name="paymentFilter"></param>
     /// <param name="statusFilter"></param>
-    /// <returns></returns>
+    /// <summary>
+    /// Counts the restaurant's orders using the specified filters.
+    /// </summary>
+    /// <param name="restaurantId">The restaurant whose orders are counted.</param>
+    /// <param name="paymentFilter">The payment mode filter, or "all" to include every payment mode.</param>
+    /// <param name="statusFilter">The order status filter, or "all" to include every status.</param>
+    /// <param name="searchText">Text used to search order item names.</param>
+    /// <returns>The number of matching orders.</returns>
     public int GetOrderCount(int restaurantId, string paymentFilter, string statusFilter, string searchText)
     {
             List<string> conditions = new List<string> { RestaurantOrderQueries.RetaurantIdMatches };
@@ -151,7 +168,11 @@ public class RestaurantOrderRepository
     /// Executes a SQL query to update order status
     /// </summary>
     /// <param name="orderId"></param>
-    /// <param name="newStatus"></param>
+    /// <summary>
+    /// Updates the status of an order.
+    /// </summary>
+    /// <param name="orderId">The identifier of the order to update.</param>
+    /// <param name="newStatus">The new status for the order.</param>
     public void UpdateOrderStatus(string orderId, string newStatus)
     {
         string query = RestaurantOrderQueries.UpdateStatus;
